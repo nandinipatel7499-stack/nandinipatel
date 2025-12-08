@@ -28,7 +28,7 @@
            CSS VARIABLES & ROOT STYLES
            ============================================ */
         :root {
-            /* Dark Neon Theme Colors */
+            /* Dark Theme Colors (Default) */
             --bg-primary: #0a0a0f;
             --bg-secondary: #12121a;
             --bg-tertiary: #1a1a25;
@@ -52,6 +52,11 @@
             --text-secondary: #a1a1aa;
             --text-muted: #71717a;
 
+            /* Border & Shadow */
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --navbar-bg: rgba(10, 10, 15, 0.9);
+
             /* Spacing */
             --section-padding: 100px 0;
             --container-max-width: 1400px;
@@ -62,6 +67,158 @@
             --transition-fast: 0.2s ease;
             --transition-medium: 0.3s ease;
             --transition-slow: 0.5s ease;
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-primary: #f8f9fc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f0f2f5;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-card-hover: rgba(248, 249, 252, 1);
+
+            /* Accent Colors - slightly darker for light theme */
+            --neon-purple: #9333ea;
+            --neon-pink: #db2777;
+            --neon-blue: #2563eb;
+            --neon-cyan: #0891b2;
+            --neon-green: #059669;
+
+            /* Gradient Colors */
+            --gradient-primary: linear-gradient(135deg, #9333ea 0%, #db2777 50%, #2563eb 100%);
+            --gradient-secondary: linear-gradient(135deg, #0891b2 0%, #059669 100%);
+            --gradient-glow: linear-gradient(135deg, rgba(147, 51, 234, 0.15) 0%, rgba(219, 39, 119, 0.15) 100%);
+
+            /* Text Colors */
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a5a;
+            --text-muted: #6b7280;
+
+            /* Border & Shadow */
+            --border-color: rgba(0, 0, 0, 0.08);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+            z-index: 9999;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(168, 85, 247, 0.5);
+        }
+
+        .theme-toggle i {
+            font-size: 1.3rem;
+            color: #ffffff;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover i {
+            transform: rotate(20deg);
+        }
+
+        .theme-toggle .fa-sun {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .fa-moon {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .fa-sun {
+            display: block;
+        }
+
+        /* Light theme specific overrides */
+        [data-theme="light"] .navbar.scrolled {
+            background: var(--navbar-bg);
+            box-shadow: 0 2px 20px var(--shadow-color);
+        }
+
+        [data-theme="light"] .animated-bg {
+            opacity: 0.5;
+        }
+
+        [data-theme="light"] .grid-pattern {
+            opacity: 0.03;
+        }
+
+        [data-theme="light"] .gradient-orb {
+            opacity: 0.4;
+        }
+
+        [data-theme="light"] .app-card {
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        [data-theme="light"] .app-card:hover {
+            box-shadow: 0 10px 40px var(--shadow-color);
+        }
+
+        [data-theme="light"] .hero-title {
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .modal-container {
+            box-shadow: 0 20px 60px var(--shadow-color);
+        }
+
+        [data-theme="light"] .tool-item {
+            background: var(--bg-secondary);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        [data-theme="light"] .contact-form {
+            box-shadow: 0 4px 30px var(--shadow-color);
+        }
+
+        [data-theme="light"] .form-group input,
+        [data-theme="light"] .form-group textarea {
+            background: var(--bg-tertiary);
+            border-color: var(--border-color);
+        }
+
+        [data-theme="light"] .form-group input:focus,
+        [data-theme="light"] .form-group textarea:focus {
+            background: var(--bg-secondary);
+        }
+
+        [data-theme="light"] .about-stat {
+            box-shadow: 0 2px 15px var(--shadow-color);
+        }
+
+        [data-theme="light"] .section-label {
+            background: rgba(147, 51, 234, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .theme-toggle i {
+                font-size: 1.1rem;
+            }
         }
 
         /* ============================================
@@ -2692,6 +2849,12 @@
     </style>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+        <i class="fas fa-sun"></i>
+    </button>
+
     <!-- Animated Background -->
     <div class="animated-bg">
         <div class="gradient-orb orb-1"></div>
@@ -3550,6 +3713,26 @@
            ============================================ */
 
         document.addEventListener('DOMContentLoaded', async () => {
+            // Theme Toggle Functionality
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+
+            // Apply saved theme on load
+            if (savedTheme === 'light') {
+                document.body.setAttribute('data-theme', 'light');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                document.body.setAttribute('data-theme', newTheme === 'light' ? 'light' : '');
+                if (newTheme === 'dark') {
+                    document.body.removeAttribute('data-theme');
+                }
+                localStorage.setItem('theme', newTheme);
+            });
+
             // Initialize EmailJS
             emailjs.init('1NBuf-iKKF1Y2bfC5');
 
