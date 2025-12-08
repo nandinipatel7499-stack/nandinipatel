@@ -2367,6 +2367,243 @@
             }
         }
 
+        /* ============================================
+           iPHONE SPECIFIC OPTIMIZATIONS
+           ============================================ */
+
+        /* Fix for Email Me button clickability */
+        .contact-link {
+            position: relative;
+            z-index: 10;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(168, 85, 247, 0.3);
+        }
+
+        /* iOS Safari smooth scrolling and performance */
+        @supports (-webkit-touch-callout: none) {
+            html {
+                -webkit-overflow-scrolling: touch;
+            }
+
+            body {
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-y: none;
+            }
+
+            /* Reduce heavy animations on iOS */
+            .gradient-orb {
+                animation: none !important;
+                opacity: 0.3;
+            }
+
+            .animated-bg::before {
+                animation: none !important;
+            }
+
+            /* Simplify gradients for better performance */
+            .hero-title {
+                background-size: 100% 100%;
+                animation: none;
+            }
+
+            /* Optimize transforms */
+            .app-card,
+            .tool-item,
+            .about-feature {
+                transform: translateZ(0);
+                -webkit-transform: translateZ(0);
+                will-change: auto;
+            }
+        }
+
+        /* iPhone SE and small iPhones (375px and below) */
+        @media (max-width: 375px) {
+            .container {
+                padding: 0 12px;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+                line-height: 1.2;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .hero-description {
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .section-description {
+                font-size: 0.9rem;
+            }
+
+            .stat-value {
+                font-size: 1.6rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .app-card-content {
+                padding: 15px;
+            }
+
+            .app-icon {
+                width: 55px;
+                height: 55px;
+            }
+
+            .app-name {
+                font-size: 1rem;
+            }
+
+            .tool-item {
+                padding: 15px 10px;
+            }
+
+            .tool-icon {
+                font-size: 1.5rem;
+            }
+
+            .tool-name {
+                font-size: 0.7rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            /* Form adjustments */
+            .form-grid {
+                gap: 12px;
+            }
+
+            .form-input,
+            .form-textarea {
+                padding: 12px 14px;
+                font-size: 16px; /* Prevents iOS zoom on focus */
+            }
+
+            .submit-btn {
+                padding: 14px 20px;
+                font-size: 0.95rem;
+            }
+
+            .contact-link {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            /* Modal adjustments */
+            .modal-overlay {
+                padding: 10px;
+            }
+
+            .modal-content {
+                padding: 20px 15px;
+            }
+
+            .modal-app-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .modal-app-name {
+                font-size: 1.2rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .info-item {
+                padding: 12px;
+            }
+
+            /* About section stats */
+            .about-stats {
+                gap: 15px;
+            }
+
+            .about-stat {
+                padding: 15px 10px;
+            }
+
+            .about-stat-value {
+                font-size: 1.5rem;
+            }
+
+            .about-stat-label {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Mobile performance mode - disable heavy effects */
+        @media (max-width: 768px) {
+            /* Disable parallax and heavy transforms */
+            .animated-bg {
+                position: absolute;
+                animation: none !important;
+            }
+
+            .gradient-orb {
+                display: none;
+            }
+
+            .grid-pattern {
+                opacity: 0.02;
+            }
+
+            /* Use simpler transitions */
+            .app-card {
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .btn {
+                transition: transform 0.15s ease, background 0.15s ease;
+            }
+
+            /* Prevent layout shifts */
+            img {
+                content-visibility: auto;
+            }
+
+            /* Optimize screenshot swiper */
+            .swiper-slide {
+                transform: translateZ(0);
+            }
+        }
+
+        /* Safe area insets for notched iPhones */
+        @supports (padding: max(0px)) {
+            .navbar {
+                padding-left: max(20px, env(safe-area-inset-left));
+                padding-right: max(20px, env(safe-area-inset-right));
+            }
+
+            .container {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+            }
+
+            .footer {
+                padding-bottom: max(30px, env(safe-area-inset-bottom));
+            }
+
+            .modal-overlay {
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+
         /* Reduced Motion */
         @media (prefers-reduced-motion: reduce) {
             *,
@@ -3259,12 +3496,17 @@
             emailjs.init('1NBuf-iKKF1Y2bfC5');
 
             // Initialize AOS with responsive settings
+            // Check if mobile device
+            const isMobile = window.innerWidth < 768;
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+            // Initialize AOS with mobile-optimized settings
             AOS.init({
-                duration: 800,
+                duration: isMobile ? 400 : 800,
                 easing: 'ease-out-cubic',
                 once: true,
-                offset: 50,
-                disable: window.innerWidth < 768 ? 'phone' : false
+                offset: isMobile ? 20 : 50,
+                disable: isMobile || isIOS ? true : false // Disable on mobile for performance
             });
 
             // Register GSAP ScrollTrigger
@@ -3359,28 +3601,30 @@
                 visibility: 'visible'
             });
 
-            // Animated background orbs parallax effect
-            gsap.to('.orb-1', {
-                x: 100,
-                y: -50,
-                scrollTrigger: {
-                    trigger: '.hero',
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1
-                }
-            });
+            // Animated background orbs parallax effect (desktop only)
+            if (!isMobile && !isIOS) {
+                gsap.to('.orb-1', {
+                    x: 100,
+                    y: -50,
+                    scrollTrigger: {
+                        trigger: '.hero',
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: 1
+                    }
+                });
 
-            gsap.to('.orb-2', {
-                x: -80,
-                y: 60,
-                scrollTrigger: {
-                    trigger: '.hero',
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1.5
-                }
-            });
+                gsap.to('.orb-2', {
+                    x: -80,
+                    y: 60,
+                    scrollTrigger: {
+                        trigger: '.hero',
+                        start: 'top top',
+                        end: 'bottom top',
+                        scrub: 1.5
+                    }
+                });
+            }
 
             // Detect user's country code first
             await detectUserCountry();
