@@ -2789,18 +2789,31 @@
 
         async function detectUserCountry() {
             try {
-                // Using ipapi.co for free IP geolocation
-                const response = await fetch('https://ipapi.co/json/');
-                const data = await response.json();
-                if (data.country_code) {
-                    userCountryCode = data.country_code.toLowerCase();
-                    console.log('Detected country:', userCountryCode);
+                // Try multiple geo-location services for reliability
+                const geoServices = [
+                    'https://api.country.is/',
+                    'https://ipapi.co/json/'
+                ];
+
+                for (const service of geoServices) {
+                    try {
+                        const response = await fetch(service, { timeout: 3000 });
+                        const data = await response.json();
+                        const countryCode = data.country || data.country_code;
+                        if (countryCode) {
+                            userCountryCode = countryCode.toLowerCase();
+                            console.log('Detected country:', userCountryCode);
+                            return;
+                        }
+                    } catch (e) {
+                        console.log(`Geo service ${service} failed, trying next...`);
+                    }
                 }
             } catch (error) {
                 console.log('Could not detect country, using default:', userCountryCode);
-                // Fallback to India if detection fails
-                userCountryCode = 'in';
             }
+            // Fallback to India if all detection fails
+            userCountryCode = 'in';
         }
 
         /* ============================================
@@ -2854,37 +2867,50 @@
            ============================================ */
 
         async function fetchAppData(appId) {
-            try {
-                // Fetch with user's country code for localized ratings and reviews
-                const url = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
-                console.log(`Fetching app ${appId} from: ${url}`);
+            // Fetch with user's country code for localized ratings and reviews
+            const baseUrl = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
 
-                const response = await fetch(url);
-                const data = await response.json();
+            // CORS proxy options for fallback
+            const urls = [
+                baseUrl,
+                `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`
+            ];
 
-                if (data.results && data.results.length > 0) {
-                    const app = data.results[0];
+            for (const url of urls) {
+                try {
+                    console.log(`Fetching app ${appId} from: ${url}`);
+                    const response = await fetch(url);
 
-                    // Normalize rating fields (API uses different field names)
-                    // Check both regular and "ForCurrentVersion" fields
-                    const rating = app.averageUserRating ?? app.averageUserRatingForCurrentVersion ?? 0;
-                    const ratingCount = app.userRatingCount ?? app.userRatingCountForCurrentVersion ?? 0;
+                    if (!response.ok) continue;
 
-                    app.averageUserRating = rating;
-                    app.userRatingCount = ratingCount;
+                    const data = await response.json();
 
-                    console.log(`App: ${app.trackName}`);
-                    console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
-                    console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
-                    console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
+                    if (data.results && data.results.length > 0) {
+                        const app = data.results[0];
 
-                    return app;
+                        // Normalize rating fields (API uses different field names)
+                        // Check both regular and "ForCurrentVersion" fields
+                        const rating = app.averageUserRating ?? app.averageUserRatingForCurrentVersion ?? 0;
+                        const ratingCount = app.userRatingCount ?? app.userRatingCountForCurrentVersion ?? 0;
+
+                        app.averageUserRating = rating;
+                        app.userRatingCount = ratingCount;
+
+                        console.log(`App: ${app.trackName}`);
+                        console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
+                        console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
+                        console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
+
+                        return app;
+                    }
+                } catch (error) {
+                    console.log(`Attempt failed for ${url}, trying next...`);
                 }
-                return null;
-            } catch (error) {
-                console.error(`Error fetching app ${appId}:`, error);
-                return null;
             }
+
+            console.error(`Error fetching app ${appId}: All attempts failed`);
+            return null;
         }
 
         async function fetchAllApps() {
