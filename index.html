@@ -1,0 +1,3496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Nandini Patel - Independent iOS App Developer. Explore my portfolio of innovative mobile applications on the App Store.">
+    <title>Nandini Patel | App Store Developer</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Swiper.js for Sliders -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ============================================
+           CSS VARIABLES & ROOT STYLES
+           ============================================ */
+        :root {
+            /* Dark Neon Theme Colors */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-card: rgba(26, 26, 37, 0.8);
+            --bg-card-hover: rgba(35, 35, 50, 0.9);
+
+            /* Neon Accent Colors */
+            --neon-purple: #a855f7;
+            --neon-pink: #ec4899;
+            --neon-blue: #3b82f6;
+            --neon-cyan: #06b6d4;
+            --neon-green: #10b981;
+
+            /* Gradient Colors */
+            --gradient-primary: linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #3b82f6 100%);
+            --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #10b981 100%);
+            --gradient-glow: linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(236, 72, 153, 0.3) 100%);
+
+            /* Text Colors */
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+
+            /* Spacing */
+            --section-padding: 100px 0;
+            --container-max-width: 1400px;
+            --border-radius: 20px;
+            --border-radius-sm: 12px;
+
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-medium: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        /* ============================================
+           RESET & BASE STYLES
+           ============================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-pink);
+        }
+
+        /* Selection */
+        ::selection {
+            background: var(--neon-purple);
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           ANIMATED BACKGROUND
+           ============================================ */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: var(--neon-purple);
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--neon-pink);
+            top: 50%;
+            right: -150px;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: var(--neon-blue);
+            bottom: -100px;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        .orb-4 {
+            width: 300px;
+            height: 300px;
+            background: var(--neon-cyan);
+            top: 40%;
+            left: 10%;
+            animation-delay: -15s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(50px, -50px) scale(1.1);
+            }
+            50% {
+                transform: translate(-30px, 30px) scale(0.95);
+            }
+            75% {
+                transform: translate(-50px, -30px) scale(1.05);
+            }
+        }
+
+        /* Grid Pattern Overlay */
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        /* ============================================
+           CONTAINER & LAYOUT
+           ============================================ */
+        .container {
+            max-width: var(--container-max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: var(--section-padding);
+            position: relative;
+        }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: var(--transition-medium);
+        }
+
+        .navbar.scrolled {
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(168, 85, 247, 0.1);
+            padding: 15px 0;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: var(--transition-medium);
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 10px 24px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            text-decoration: none;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.4);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: var(--transition-fast);
+        }
+
+        /* Mobile Menu Overlay - Hidden by default */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(10, 10, 15, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-medium);
+        }
+
+        .mobile-menu.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+
+        .mobile-menu a:hover {
+            color: var(--neon-purple);
+        }
+
+        .mobile-menu-close {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 100px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        /* Ensure elements are visible by default */
+        .hero-badge,
+        .hero-title,
+        .hero-subtitle,
+        .hero-description,
+        .hero-buttons,
+        .hero-buttons .btn,
+        .stat-item,
+        .app-card,
+        .tool-card,
+        .stat-card {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--neon-purple);
+            margin-bottom: 30px;
+        }
+
+        .hero-badge i {
+            font-size: 1rem;
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: var(--transition-medium);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--text-primary);
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--neon-purple);
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        /* Hero Stats */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 80px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator i {
+            font-size: 1.5rem;
+            color: var(--neon-purple);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* ============================================
+           SECTION HEADERS
+           ============================================ */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-label {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--neon-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+           APPS GALLERY SECTION
+           ============================================ */
+        .apps-section {
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .apps-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        /* Loading State */
+        .loading-container {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(168, 85, 247, 0.2);
+            border-top-color: var(--neon-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* App Card */
+        .app-card {
+            background: var(--bg-card);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            position: relative;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-glow);
+            opacity: 0;
+            transition: var(--transition-medium);
+            z-index: 0;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 25px 80px rgba(168, 85, 247, 0.2);
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-card-content {
+            position: relative;
+            z-index: 1;
+            padding: 30px;
+        }
+
+        .app-card-header {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .app-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .app-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .app-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .app-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--neon-purple);
+        }
+
+        .app-rating {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 3px;
+        }
+
+        .stars i {
+            color: #fbbf24;
+            font-size: 0.9rem;
+        }
+
+        .stars i.empty {
+            color: var(--text-muted);
+        }
+
+        .rating-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .review-count {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .app-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        /* Screenshot Preview in App Card */
+        .app-screenshots-preview {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            align-items: center;
+        }
+
+        .screenshot-thumb {
+            height: 80px;
+            width: auto;
+            border-radius: 8px;
+            object-fit: cover;
+            opacity: 0.9;
+            transition: var(--transition-fast);
+        }
+
+        .screenshot-thumb:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .more-screenshots {
+            background: var(--gradient-glow);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--neon-purple);
+            font-weight: 600;
+        }
+
+        .app-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item i {
+            color: var(--neon-cyan);
+        }
+
+        .app-card-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .view-details {
+            color: var(--neon-purple);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-fast);
+        }
+
+        .app-card:hover .view-details {
+            gap: 12px;
+        }
+
+        .app-store-badge {
+            height: 40px;
+            transition: var(--transition-fast);
+        }
+
+        .app-card:hover .app-store-badge {
+            transform: scale(1.05);
+        }
+
+        /* ============================================
+           MODAL STYLES
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-medium);
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            overflow: hidden;
+            transform: translateY(50px) scale(0.95);
+            transition: var(--transition-medium);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: var(--neon-purple);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            padding: 40px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .modal-app-header {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .modal-app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            object-fit: cover;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-app-info {
+            flex: 1;
+        }
+
+        .modal-app-name {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .modal-app-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-app-developer {
+            color: var(--neon-purple);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .modal-rating-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .modal-rating {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-rating .stars i {
+            font-size: 1.1rem;
+        }
+
+        .modal-rating-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-review-count {
+            color: var(--text-muted);
+        }
+
+        .modal-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .modal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-badge i {
+            color: var(--neon-cyan);
+        }
+
+        .modal-body {
+            padding: 40px;
+        }
+
+        /* Screenshots Section */
+        .screenshots-section {
+            margin-bottom: 40px;
+        }
+
+        .screenshots-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .screenshots-section h3 i {
+            color: var(--neon-purple);
+        }
+
+        .screenshots-swiper {
+            overflow: visible;
+        }
+
+        .screenshots-swiper .swiper-slide {
+            width: auto;
+        }
+
+        .screenshot-img {
+            height: 400px;
+            border-radius: var(--border-radius-sm);
+            object-fit: contain;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: var(--transition-medium);
+        }
+
+        .screenshot-img:hover {
+            transform: scale(1.02);
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: var(--neon-purple);
+            background: var(--bg-card);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 1.2rem;
+        }
+
+        .swiper-pagination-bullet {
+            background: var(--text-muted);
+        }
+
+        .swiper-pagination-bullet-active {
+            background: var(--neon-purple);
+        }
+
+        /* Description Section */
+        .description-section {
+            margin-bottom: 40px;
+        }
+
+        .description-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .description-section h3 i {
+            color: var(--neon-purple);
+        }
+
+        .description-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .description-text.collapsed {
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .description-text.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(transparent, var(--bg-secondary));
+        }
+
+        .read-more-btn {
+            background: none;
+            border: none;
+            color: var(--neon-purple);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            padding: 0;
+        }
+
+        /* What's New Section */
+        .whats-new-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .whats-new-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .whats-new-section h3 i {
+            color: var(--neon-green);
+        }
+
+        .version-info {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .whats-new-text {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .info-card-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-card-label i {
+            color: var(--neon-cyan);
+        }
+
+        .info-card-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* IAP Section */
+        .iap-section {
+            margin-bottom: 40px;
+        }
+
+        .iap-section h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .iap-section h3 i {
+            color: var(--neon-pink);
+        }
+
+        .iap-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .iap-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .iap-name {
+            font-weight: 500;
+        }
+
+        .iap-price {
+            color: var(--neon-green);
+            font-weight: 600;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: 30px 40px;
+            background: var(--bg-tertiary);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-store-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 40px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition-medium);
+        }
+
+        .app-store-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(168, 85, 247, 0.4);
+        }
+
+        .app-store-btn i {
+            font-size: 1.3rem;
+        }
+
+        /* ============================================
+           LIGHTBOX
+           ============================================ */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-medium);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .lightbox-close:hover {
+            background: var(--neon-purple);
+        }
+
+        /* ============================================
+           ABOUT SECTION
+           ============================================ */
+        .about-section {
+            position: relative;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .about-features {
+            display: grid;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon i {
+            font-size: 1.3rem;
+            color: var(--neon-purple);
+        }
+
+        .feature-content h4 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .feature-content p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .about-visual {
+            position: relative;
+        }
+
+        .about-image-wrapper {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .about-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, var(--neon-purple), transparent 30%);
+            animation: rotate 4s linear infinite;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .about-image-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+        }
+
+        .about-image {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            background: var(--bg-tertiary);
+        }
+
+        .about-image i {
+            font-size: 8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ============================================
+           CONTACT SECTION
+           ============================================ */
+        .contact-section {
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: var(--bg-tertiary);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-medium);
+        }
+
+        .contact-link:hover {
+            border-color: var(--neon-purple);
+            background: rgba(168, 85, 247, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .contact-link i {
+            font-size: 1.2rem;
+            color: var(--neon-purple);
+        }
+
+        /* Contact Form Styles */
+        .contact-form-wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .contact-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .contact-intro p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .contact-intro .highlight {
+            color: var(--neon-purple);
+            font-weight: 600;
+        }
+
+        .contact-form {
+            background: var(--bg-tertiary);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group label .required {
+            color: var(--neon-pink);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: var(--transition-fast);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px 32px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 50px rgba(168, 85, 247, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .form-status {
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            display: none;
+        }
+
+        .form-status.success {
+            display: block;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .form-status.error {
+            display: block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .email-direct {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .email-direct p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        /* ============================================
+           TOOLS SECTION
+           ============================================ */
+        .tools-section {
+            position: relative;
+        }
+
+        .tools-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 25px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .tool-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 30px 20px;
+            text-align: center;
+            transition: var(--transition-medium);
+            cursor: default;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 20px 60px rgba(168, 85, 247, 0.15);
+        }
+
+        .tool-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+
+        /* ============================================
+           STATS SECTION (Additional Stats)
+           ============================================ */
+        .stats-section {
+            background: var(--bg-secondary);
+            position: relative;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius);
+            padding: 40px 30px;
+            text-align: center;
+            transition: var(--transition-medium);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(168, 85, 247, 0.2);
+        }
+
+        .stat-card-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+            background: var(--gradient-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card-icon i {
+            font-size: 1.5rem;
+            color: var(--neon-purple);
+        }
+
+        .stat-card-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .stat-card-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-text span {
+            color: var(--neon-purple);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+
+        .footer-links a:hover {
+            color: var(--neon-purple);
+        }
+
+        /* ============================================
+           RESPONSIVE STYLES - ALL DEVICES
+           ============================================ */
+
+        /* Large Desktop (1440px+) */
+        @media (min-width: 1440px) {
+            :root {
+                --container-max-width: 1600px;
+            }
+
+            .hero-title {
+                font-size: 6rem;
+            }
+
+            .apps-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Desktop (1024px - 1439px) */
+        @media (max-width: 1439px) and (min-width: 1025px) {
+            .apps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Tablet Landscape & Small Desktop (1024px) */
+        @media (max-width: 1024px) {
+            :root {
+                --section-padding: 80px 0;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+
+            .about-visual {
+                order: -1;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .about-image i {
+                font-size: 6rem;
+            }
+
+            .apps-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+
+            .nav-links {
+                gap: 25px;
+            }
+        }
+
+        /* Tablet Portrait (768px - 1023px) */
+        @media (max-width: 1023px) and (min-width: 769px) {
+            .hero-stats {
+                gap: 50px;
+            }
+
+            .stat-value {
+                font-size: 2.2rem;
+            }
+
+            .modal-container {
+                max-width: 90%;
+            }
+        }
+
+        /* Mobile Landscape & Tablet (768px) */
+        @media (max-width: 768px) {
+            :root {
+                --section-padding: 60px 0;
+                --border-radius: 16px;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            /* Navigation */
+            .nav-links,
+            .nav-cta {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            /* Hero */
+            .hero {
+                padding-top: 80px;
+                min-height: auto;
+                padding-bottom: 60px;
+            }
+
+            .hero-badge {
+                font-size: 0.8rem;
+                padding: 6px 16px;
+            }
+
+            .hero-title {
+                font-size: clamp(2.2rem, 10vw, 3.5rem);
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+                padding: 0 10px;
+            }
+
+            .hero-stats {
+                gap: 40px;
+                margin-top: 50px;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+
+            .scroll-indicator {
+                display: none;
+            }
+
+            /* Apps Grid */
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .app-card:hover {
+                transform: translateY(-5px);
+            }
+
+            /* Modal */
+            .modal-overlay {
+                padding: 20px 15px;
+            }
+
+            .modal-container {
+                border-radius: var(--border-radius);
+            }
+
+            .modal-close {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .modal-app-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .modal-app-icon {
+                width: 100px;
+                height: 100px;
+                margin: 0 auto;
+            }
+
+            .modal-app-name {
+                font-size: 1.5rem;
+            }
+
+            .modal-rating-row {
+                justify-content: center;
+            }
+
+            .modal-badges {
+                justify-content: center;
+            }
+
+            .screenshot-img {
+                height: 280px;
+            }
+
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Footer */
+            .footer .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                gap: 20px;
+            }
+        }
+
+        /* Mobile Large (480px - 767px) */
+        @media (max-width: 767px) and (min-width: 481px) {
+            .hero-buttons {
+                flex-direction: row;
+            }
+
+            .btn {
+                padding: 14px 24px;
+                font-size: 0.95rem;
+            }
+
+            .app-card-header {
+                flex-direction: row;
+                text-align: left;
+            }
+
+            .app-icon {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+        /* Mobile Small (up to 480px) */
+        @media (max-width: 480px) {
+            :root {
+                --section-padding: 50px 0;
+                --border-radius: 14px;
+                --border-radius-sm: 10px;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .navbar {
+                padding: 15px 0;
+            }
+
+            .nav-logo {
+                font-size: 1.3rem;
+            }
+
+            .hero {
+                padding-top: 70px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+                line-height: 1.15;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+                margin-bottom: 20px;
+            }
+
+            .hero-description {
+                font-size: 0.95rem;
+                margin-bottom: 30px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 24px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 25px;
+                margin-top: 40px;
+            }
+
+            .stat-value {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.85rem;
+            }
+
+            /* Section Headers */
+            .section-header {
+                margin-bottom: 40px;
+            }
+
+            .section-label {
+                font-size: 0.75rem;
+                padding: 6px 14px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .section-description {
+                font-size: 1rem;
+            }
+
+            /* App Cards */
+            .app-card-content {
+                padding: 20px;
+            }
+
+            .app-card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .app-icon {
+                width: 70px;
+                height: 70px;
+                margin: 0 auto;
+            }
+
+            .app-name {
+                font-size: 1.15rem;
+            }
+
+            .app-rating {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .app-meta {
+                justify-content: center;
+            }
+
+            .app-card-cta {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+
+            .app-store-badge {
+                height: 35px;
+            }
+
+            /* Modal */
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 20px;
+            }
+
+            .modal-app-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .modal-app-name {
+                font-size: 1.3rem;
+            }
+
+            .modal-app-subtitle {
+                font-size: 1rem;
+            }
+
+            .screenshot-img {
+                height: 220px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .info-card {
+                padding: 15px;
+            }
+
+            .info-card-value {
+                font-size: 1rem;
+            }
+
+            .app-store-btn {
+                padding: 14px 30px;
+                font-size: 1rem;
+            }
+
+            /* About Section */
+            .about-text h3 {
+                font-size: 1.5rem;
+            }
+
+            .about-image {
+                padding: 40px;
+            }
+
+            .about-image i {
+                font-size: 5rem;
+            }
+
+            .feature-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .feature-icon {
+                margin: 0 auto;
+            }
+
+            /* Contact */
+            .contact-links {
+                flex-direction: column;
+            }
+
+            .contact-link {
+                justify-content: center;
+                padding: 12px 24px;
+            }
+
+            /* Lightbox */
+            .lightbox-close {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Extra Small Mobile (up to 360px) */
+        @media (max-width: 360px) {
+            .hero-title {
+                font-size: 1.9rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .app-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .modal-app-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .screenshot-img {
+                height: 180px;
+            }
+        }
+
+        /* Touch Device Optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .app-card:hover {
+                transform: none;
+            }
+
+            .app-card:active {
+                transform: scale(0.98);
+            }
+
+            .btn:hover {
+                transform: none;
+            }
+
+            .btn:active {
+                transform: scale(0.97);
+            }
+
+            .nav-cta:hover {
+                transform: none;
+            }
+
+            .contact-link:hover {
+                transform: none;
+            }
+
+            .contact-link:active {
+                transform: scale(0.98);
+            }
+
+            /* Larger touch targets */
+            .nav-links a {
+                padding: 10px;
+            }
+
+            .modal-close,
+            .lightbox-close {
+                min-width: 44px;
+                min-height: 44px;
+            }
+        }
+
+        /* High DPI Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .gradient-orb {
+                filter: blur(100px);
+            }
+        }
+
+        /* Landscape Mode on Mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero {
+                min-height: auto;
+                padding: 100px 0 40px;
+            }
+
+            .hero-stats {
+                flex-direction: row;
+                gap: 40px;
+            }
+
+            .scroll-indicator {
+                display: none;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .animated-bg,
+            .grid-pattern,
+            .navbar,
+            .scroll-indicator,
+            .modal-overlay,
+            .lightbox {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            .hero-title,
+            .section-title,
+            .stat-value {
+                -webkit-text-fill-color: #000;
+                background: none;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .gradient-orb {
+                animation: none;
+            }
+
+            .about-image-wrapper::before {
+                animation: none;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        /* Dark Mode Support (already dark theme, but for system preference) */
+        @media (prefers-color-scheme: light) {
+            /* Keep dark theme regardless of system preference */
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="gradient-orb orb-4"></div>
+    </div>
+    <div class="grid-pattern"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="nav-logo">NP</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#apps">Apps</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#tools">Tools</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#apps" class="nav-cta">View Apps</a>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="#home" class="mobile-menu-link">Home</a>
+        <a href="#apps" class="mobile-menu-link">Apps</a>
+        <a href="#about" class="mobile-menu-link">About</a>
+        <a href="#tools" class="mobile-menu-link">Tools</a>
+        <a href="#contact" class="mobile-menu-link">Contact</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <div class="hero-badge">
+                    <i class="fab fa-apple"></i>
+                    <span>App Store Developer</span>
+                </div>
+                <h1 class="hero-title">Nandini Patel</h1>
+                <p class="hero-subtitle">Crafting Exceptional Mobile Experiences</p>
+                <p class="hero-description">
+                    Passionate about building innovative iOS applications that make a difference.
+                    Explore my portfolio of apps designed with love, precision, and a focus on user experience.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#apps" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Explore My Apps
+                    </a>
+                    <a href="#contact" class="btn btn-secondary">
+                        <i class="fas fa-envelope"></i>
+                        Get in Touch
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                        <div class="stat-value" id="total-apps">0</div>
+                        <div class="stat-label">Live Apps</div>
+                    </div>
+                    <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                        <div class="stat-value" id="avg-rating">0.0</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                        <div class="stat-value" id="total-reviews">0</div>
+                        <div class="stat-label">User Reviews</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Apps Section -->
+    <section class="apps-section" id="apps">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Portfolio</span>
+                <h2 class="section-title">My Applications</h2>
+                <p class="section-description">
+                    Discover my collection of thoughtfully designed applications,
+                    each crafted to deliver exceptional user experiences.
+                </p>
+            </div>
+            <div class="apps-grid" id="apps-grid">
+                <!-- Apps will be dynamically loaded here -->
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Loading apps from App Store...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text" data-aos="fade-right">
+                    <span class="section-label">About Me</span>
+                    <h3>Building the Future, One App at a Time</h3>
+                    <p>
+                        As an independent iOS developer, I focus on creating apps that solve real problems
+                        and bring joy to users. Every line of code is written with purpose, every interface
+                        designed with intention.
+                    </p>
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Native Development</h4>
+                                <p>Built with Swift for optimal performance</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Beautiful Design</h4>
+                                <p>Intuitive interfaces that users love</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4>Privacy First</h4>
+                                <p>Your data stays yours, always</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual" data-aos="fade-left">
+                    <div class="about-image-wrapper">
+                        <div class="about-image">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section" id="stats">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Achievements</span>
+                <h2 class="section-title">Numbers That Matter</h2>
+                <p class="section-description">
+                    Years of dedication, hundreds of happy clients, and a passion for creating exceptional apps.
+                </p>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-card-value">10+</div>
+                    <div class="stat-card-label">Happy Clients Worldwide</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="stat-card-value">5+</div>
+                    <div class="stat-card-label">Years of Experience</div>
+                </div>
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="stat-card-value">50+</div>
+                    <div class="stat-card-label">Live Apps</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="tools-section" id="tools">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Tech Stack</span>
+                <h2 class="section-title">Development Tools</h2>
+                <p class="section-description">
+                    Professional tools and technologies I use to build high-quality iOS applications.
+                </p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="50">
+                    <div class="tool-icon">
+                        <i class="fas fa-hammer" style="font-size: 2.5rem; color: #147EFB;"></i>
+                    </div>
+                    <div class="tool-name">Xcode</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="tool-icon">
+                        <i class="fab fa-swift" style="font-size: 2.5rem; color: #FA7343;"></i>
+                    </div>
+                    <div class="tool-name">Swift</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="150">
+                    <div class="tool-icon">
+                        <i class="fas fa-fire" style="font-size: 2.5rem; color: #FFCA28;"></i>
+                    </div>
+                    <div class="tool-name">Firebase</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="tool-icon">
+                        <i class="fas fa-paper-plane" style="font-size: 2.5rem; color: #FF6C37;"></i>
+                    </div>
+                    <div class="tool-name">Postman</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="tool-icon">
+                        <i class="fab fa-figma" style="font-size: 2.5rem; color: #F24E1E;"></i>
+                    </div>
+                    <div class="tool-name">Figma</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="tool-icon">
+                        <i class="fas fa-pencil-ruler" style="font-size: 2.5rem; color: #FF61F6;"></i>
+                    </div>
+                    <div class="tool-name">Adobe XD</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="350">
+                    <div class="tool-icon">
+                        <i class="fab fa-github" style="font-size: 2.5rem; color: #ffffff;"></i>
+                    </div>
+                    <div class="tool-name">GitHub</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="tool-icon">
+                        <i class="fas fa-cloud" style="font-size: 2.5rem; color: #F38020;"></i>
+                    </div>
+                    <div class="tool-name">Cloudflare</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="450">
+                    <div class="tool-icon">
+                        <i class="fab fa-jira" style="font-size: 2.5rem; color: #0052CC;"></i>
+                    </div>
+                    <div class="tool-name">Jira</div>
+                </div>
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="tool-icon">
+                        <i class="fas fa-code" style="font-size: 2.5rem; color: #007ACC;"></i>
+                    </div>
+                    <div class="tool-name">VS Code</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-label">Get in Touch</span>
+                <h2 class="section-title">Let's Connect</h2>
+            </div>
+            <div class="contact-form-wrapper" data-aos="fade-up" data-aos-delay="100">
+                <div class="contact-intro">
+                    <p>Have a question, suggestion, or just want to say hello?</p>
+                    <p>I'd love to hear from you!</p>
+                    <p class="highlight">Let's make something awesome together!</p>
+                </div>
+
+                <form class="contact-form" id="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Your Name <span class="required">*</span></label>
+                            <input type="text" id="name" name="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company Name <span class="required">*</span></label>
+                            <input type="text" id="company" name="company" placeholder="Your Company" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phone" name="phone" placeholder="+1 234 567 8900" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Short Description <span class="required">*</span></label>
+                        <textarea id="message" name="message" placeholder="Tell me about your project or inquiry..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Send Message</span>
+                    </button>
+                    <div class="form-status" id="form-status"></div>
+                </form>
+
+                <div class="email-direct">
+                    <p>Or reach out directly:</p>
+                    <a href="mailto:nandinipatel7499@gmail.com" class="contact-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email Me</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">
+                © <span id="current-year">2024</span> <span>Nandini Patel</span>. All rights reserved.
+            </p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <button class="modal-close" id="modal-close">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="modal-container" id="modal-container">
+            <!-- Modal content will be dynamically loaded -->
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close">
+            <i class="fas fa-times"></i>
+        </button>
+        <img src="" alt="Screenshot" id="lightbox-img">
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/ScrollTrigger.min.js"></script>
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        /* ============================================
+           APP CONFIGURATION
+           ============================================
+
+           To add more apps, simply add their App Store URLs to this array.
+           The app ID will be automatically extracted from each URL.
+           Country code is automatically detected from user's IP.
+        */
+        const appIds = [
+            "6746660097",  
+            "6502560786",
+            "6503259288"   
+        ];
+
+        // User's country code (detected automatically, default to India)
+        let userCountryCode = 'in';
+
+        /* ============================================
+           GEO-LOCATION DETECTION
+           ============================================ */
+
+        async function detectUserCountry() {
+            try {
+                // Using ipapi.co for free IP geolocation
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                if (data.country_code) {
+                    userCountryCode = data.country_code.toLowerCase();
+                    console.log('Detected country:', userCountryCode);
+                }
+            } catch (error) {
+                console.log('Could not detect country, using default:', userCountryCode);
+                // Fallback to India if detection fails
+                userCountryCode = 'in';
+            }
+        }
+
+        /* ============================================
+           UTILITY FUNCTIONS
+           ============================================ */
+
+        // Extract App ID from App Store URL (kept for backward compatibility)
+        function extractAppId(url) {
+            const match = url.match(/id(\d+)/);
+            return match ? match[1] : null;
+        }
+
+        // Format number with commas
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            if (bytes === 0) return '0 Bytes';
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return Math.round(bytes / Math.pow(1024, i)) + ' ' + sizes[i];
+        }
+
+        // Generate star rating HTML
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalf = rating % 1 >= 0.5;
+            let starsHtml = '';
+
+            for (let i = 0; i < 5; i++) {
+                if (i < fullStars) {
+                    starsHtml += '<i class="fas fa-star"></i>';
+                } else if (i === fullStars && hasHalf) {
+                    starsHtml += '<i class="fas fa-star-half-alt"></i>';
+                } else {
+                    starsHtml += '<i class="far fa-star empty"></i>';
+                }
+            }
+            return starsHtml;
+        }
+
+        /* ============================================
+           API DATA FETCHING
+           ============================================ */
+
+        async function fetchAppData(appId) {
+            try {
+                // Fetch with user's country code for localized ratings and reviews
+                const url = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
+                console.log(`Fetching app ${appId} from: ${url}`);
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.results && data.results.length > 0) {
+                    const app = data.results[0];
+
+                    // Normalize rating fields (API uses different field names)
+                    // Check both regular and "ForCurrentVersion" fields
+                    const rating = app.averageUserRating ?? app.averageUserRatingForCurrentVersion ?? 0;
+                    const ratingCount = app.userRatingCount ?? app.userRatingCountForCurrentVersion ?? 0;
+
+                    app.averageUserRating = rating;
+                    app.userRatingCount = ratingCount;
+
+                    console.log(`App: ${app.trackName}`);
+                    console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
+                    console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
+                    console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
+
+                    return app;
+                }
+                return null;
+            } catch (error) {
+                console.error(`Error fetching app ${appId}:`, error);
+                return null;
+            }
+        }
+
+        async function fetchAllApps() {
+            const appDataPromises = appIds.map(fetchAppData);
+            const results = await Promise.all(appDataPromises);
+            // Add country-specific App Store URL to each app
+            return results.filter(app => app !== null).map(app => ({
+                ...app,
+                trackViewUrl: `https://apps.apple.com/${userCountryCode}/app/id${app.trackId}`
+            }));
+        }
+
+        /* ============================================
+           RENDER FUNCTIONS
+           ============================================ */
+
+        function renderAppCard(app, index) {
+            const rating = app.averageUserRating || 0;
+            const ratingCount = app.userRatingCount || 0;
+            const screenshots = app.screenshotUrls || [];
+
+            // Debug log
+            console.log(`App: ${app.trackName}, Rating: ${rating}, Reviews: ${ratingCount}, Screenshots: ${screenshots.length}`);
+
+            // Screenshot preview (first 3)
+            const screenshotPreview = screenshots.length > 0 ? `
+                <div class="app-screenshots-preview">
+                    ${screenshots.slice(0, 3).map(url => `
+                        <img src="${url}" alt="Screenshot" class="screenshot-thumb" loading="lazy">
+                    `).join('')}
+                    ${screenshots.length > 3 ? `<span class="more-screenshots">+${screenshots.length - 3}</span>` : ''}
+                </div>
+            ` : '';
+
+            return `
+                <div class="app-card" data-aos="fade-up" data-aos-delay="${index * 100}" data-app-id="${app.trackId}">
+                    <div class="app-card-content">
+                        <div class="app-card-header">
+                            <img src="${app.artworkUrl512 || app.artworkUrl100}" alt="${app.trackName}" class="app-icon" loading="lazy">
+                            <div class="app-info">
+                                <h3 class="app-name">${app.trackName}</h3>
+                                <p class="app-subtitle">${app.subtitle || app.genres?.[0] || ''}</p>
+                                <span class="app-category">
+                                    <i class="fas fa-tag"></i>
+                                    ${app.primaryGenreName}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="app-rating">
+                            <div class="stars">${generateStars(rating)}</div>
+                            <span class="rating-value">${rating.toFixed(1)}</span>
+                            <span class="review-count">(${formatNumber(ratingCount)} reviews)</span>
+                        </div>
+                        ${screenshotPreview}
+                        <p class="app-description">${app.description}</p>
+                        <div class="app-meta">
+                            <span class="meta-item">
+                                <i class="fas fa-user-shield"></i>
+                                ${app.trackContentRating}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-hdd"></i>
+                                ${formatFileSize(parseInt(app.fileSizeBytes))}
+                            </span>
+                            <span class="meta-item">
+                                <i class="fas fa-code-branch"></i>
+                                v${app.version}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="app-card-cta">
+                        <span class="view-details">
+                            View Details
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                        <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83"
+                             alt="Download on App Store"
+                             class="app-store-badge">
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderModal(app) {
+            const rating = app.averageUserRating || 0;
+            const ratingCount = app.userRatingCount || 0;
+            const screenshots = app.screenshotUrls || [];
+            const ipadScreenshots = app.ipadScreenshotUrls || [];
+            const allScreenshots = [...screenshots, ...ipadScreenshots];
+            const languages = app.languageCodesISO2A || [];
+            const iaps = app.inAppPurchases || [];
+
+            let iapHtml = '';
+            if (iaps.length > 0) {
+                iapHtml = `
+                    <div class="iap-section">
+                        <h3><i class="fas fa-shopping-cart"></i> In-App Purchases</h3>
+                        <div class="iap-list">
+                            ${iaps.slice(0, 5).map(iap => `
+                                <div class="iap-item">
+                                    <span class="iap-name">${iap.name || 'In-App Purchase'}</span>
+                                    <span class="iap-price">${iap.formattedPrice || app.formattedPrice}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="modal-header">
+                    <div class="modal-app-header">
+                        <img src="${app.artworkUrl512 || app.artworkUrl100}" alt="${app.trackName}" class="modal-app-icon">
+                        <div class="modal-app-info">
+                            <h2 class="modal-app-name">${app.trackName}</h2>
+                            <p class="modal-app-subtitle">${app.subtitle || app.genres?.[0] || ''}</p>
+                            <p class="modal-app-developer">
+                                <i class="fas fa-user"></i> ${app.sellerName || app.artistName}
+                            </p>
+                            <div class="modal-rating-row">
+                                <div class="modal-rating">
+                                    <div class="stars">${generateStars(rating)}</div>
+                                    <span class="modal-rating-value">${rating.toFixed(1)}</span>
+                                    <span class="modal-review-count">(${formatNumber(ratingCount)} ratings)</span>
+                                </div>
+                            </div>
+                            <div class="modal-badges">
+                                <span class="modal-badge">
+                                    <i class="fas fa-tag"></i>
+                                    ${app.primaryGenreName}
+                                </span>
+                                <span class="modal-badge">
+                                    <i class="fas fa-user-shield"></i>
+                                    ${app.trackContentRating}
+                                </span>
+                                <span class="modal-badge">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    ${app.formattedPrice || 'Free'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    ${allScreenshots.length > 0 ? `
+                        <div class="screenshots-section">
+                            <h3><i class="fas fa-images"></i> Screenshots</h3>
+                            <div class="swiper screenshots-swiper">
+                                <div class="swiper-wrapper">
+                                    ${allScreenshots.map((url, i) => `
+                                        <div class="swiper-slide">
+                                            <img src="${url}" alt="Screenshot ${i + 1}" class="screenshot-img" data-lightbox="${url}">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="swiper-pagination"></div>
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-button-next"></div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div class="description-section">
+                        <h3><i class="fas fa-info-circle"></i> Description</h3>
+                        <p class="description-text collapsed" id="description-text">${app.description}</p>
+                        <button class="read-more-btn" id="read-more-btn">Read More</button>
+                    </div>
+
+                    ${app.releaseNotes ? `
+                        <div class="whats-new-section">
+                            <h3><i class="fas fa-sparkles"></i> What's New</h3>
+                            <p class="version-info">Version ${app.version} • ${new Date(app.currentVersionReleaseDate).toLocaleDateString()}</p>
+                            <p class="whats-new-text">${app.releaseNotes}</p>
+                        </div>
+                    ` : ''}
+
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-card-label">
+                                <i class="fas fa-hdd"></i>
+                                Size
+                            </div>
+                            <div class="info-card-value">${formatFileSize(parseInt(app.fileSizeBytes))}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-label">
+                                <i class="fas fa-code-branch"></i>
+                                Version
+                            </div>
+                            <div class="info-card-value">${app.version}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-label">
+                                <i class="fas fa-globe"></i>
+                                Languages
+                            </div>
+                            <div class="info-card-value">${languages.length > 3 ? languages.slice(0, 3).join(', ') + ` +${languages.length - 3}` : languages.join(', ') || 'N/A'}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-label">
+                                <i class="fas fa-mobile-alt"></i>
+                                Compatibility
+                            </div>
+                            <div class="info-card-value">${app.minimumOsVersion ? `iOS ${app.minimumOsVersion}+` : 'iOS'}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-label">
+                                <i class="fas fa-building"></i>
+                                Developer
+                            </div>
+                            <div class="info-card-value">${app.sellerName || app.artistName}</div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-card-label">
+                                <i class="fas fa-calendar"></i>
+                                Released
+                            </div>
+                            <div class="info-card-value">${new Date(app.releaseDate).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+
+                    ${iapHtml}
+                </div>
+                <div class="modal-footer">
+                    <a href="${app.trackViewUrl}" target="_blank" class="app-store-btn">
+                        <i class="fab fa-apple"></i>
+                        View on App Store
+                    </a>
+                </div>
+            `;
+        }
+
+        function updateStats(apps) {
+            const totalApps = apps.length;
+            const avgRating = apps.reduce((sum, app) => sum + (app.averageUserRating || 0), 0) / totalApps;
+            const totalReviews = apps.reduce((sum, app) => sum + (app.userRatingCount || 0), 0);
+
+            // Animate stats
+            gsap.to('#total-apps', {
+                duration: 2,
+                innerHTML: totalApps,
+                snap: { innerHTML: 1 },
+                ease: 'power2.out'
+            });
+
+            gsap.to('#avg-rating', {
+                duration: 2,
+                innerHTML: avgRating.toFixed(1),
+                snap: { innerHTML: 0.1 },
+                ease: 'power2.out'
+            });
+
+            gsap.to('#total-reviews', {
+                duration: 2,
+                innerHTML: formatNumber(totalReviews),
+                ease: 'power2.out'
+            });
+        }
+
+        /* ============================================
+           MODAL & LIGHTBOX HANDLERS
+           ============================================ */
+
+        let appsData = [];
+
+        function openModal(appId) {
+            const app = appsData.find(a => a.trackId === parseInt(appId));
+            if (!app) return;
+
+            const modalContainer = document.getElementById('modal-container');
+            modalContainer.innerHTML = renderModal(app);
+
+            const modalOverlay = document.getElementById('modal-overlay');
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Initialize Swiper with responsive settings
+            setTimeout(() => {
+                new Swiper('.screenshots-swiper', {
+                    slidesPerView: 'auto',
+                    spaceBetween: 15,
+                    freeMode: true,
+                    grabCursor: true,
+                    pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                        dynamicBullets: true
+                    },
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev'
+                    },
+                    breakpoints: {
+                        320: {
+                            spaceBetween: 10
+                        },
+                        480: {
+                            spaceBetween: 15
+                        },
+                        768: {
+                            spaceBetween: 20
+                        }
+                    }
+                });
+
+                // Read more functionality
+                const readMoreBtn = document.getElementById('read-more-btn');
+                const descriptionText = document.getElementById('description-text');
+
+                if (readMoreBtn && descriptionText) {
+                    readMoreBtn.addEventListener('click', () => {
+                        descriptionText.classList.toggle('collapsed');
+                        readMoreBtn.textContent = descriptionText.classList.contains('collapsed') ? 'Read More' : 'Read Less';
+                    });
+                }
+
+                // Lightbox for screenshots
+                document.querySelectorAll('.screenshot-img').forEach(img => {
+                    img.addEventListener('click', () => {
+                        const lightbox = document.getElementById('lightbox');
+                        const lightboxImg = document.getElementById('lightbox-img');
+                        lightboxImg.src = img.dataset.lightbox;
+                        lightbox.classList.add('active');
+                    });
+                });
+            }, 100);
+        }
+
+        function closeModal() {
+            const modalOverlay = document.getElementById('modal-overlay');
+            modalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+        }
+
+        /* ============================================
+           EVENT LISTENERS
+           ============================================ */
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize EmailJS
+            emailjs.init('1NBuf-iKKF1Y2bfC5');
+
+            // Initialize AOS with responsive settings
+            AOS.init({
+                duration: 800,
+                easing: 'ease-out-cubic',
+                once: true,
+                offset: 50,
+                disable: window.innerWidth < 768 ? 'phone' : false
+            });
+
+            // Register GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Navbar scroll effect with throttle
+            const navbar = document.getElementById('navbar');
+            let lastScroll = 0;
+            let ticking = false;
+
+            window.addEventListener('scroll', () => {
+                lastScroll = window.scrollY;
+                if (!ticking) {
+                    window.requestAnimationFrame(() => {
+                        if (lastScroll > 50) {
+                            navbar.classList.add('scrolled');
+                        } else {
+                            navbar.classList.remove('scrolled');
+                        }
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+
+            // Mobile Menu Functionality
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+            const mobileMenuLinks = document.querySelectorAll('.mobile-menu-link');
+
+            function openMobileMenu() {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            mobileMenuBtn.addEventListener('click', openMobileMenu);
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    closeMobileMenu();
+                });
+            });
+
+            // Close mobile menu on escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Close mobile menu when clicking outside
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target === mobileMenu) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Modal close handlers
+            document.getElementById('modal-close').addEventListener('click', closeModal);
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('modal-overlay')) {
+                    closeModal();
+                }
+            });
+
+            // Lightbox close handlers
+            document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+            document.getElementById('lightbox').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('lightbox')) {
+                    closeLightbox();
+                }
+            });
+
+            // Keyboard handlers
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    closeLightbox();
+                }
+            });
+
+            // Simple GSAP animations for hero (non-blocking)
+            gsap.set(['.hero-badge', '.hero-title', '.hero-subtitle', '.hero-description', '.hero-buttons', '.stat-item'], {
+                opacity: 1,
+                visibility: 'visible'
+            });
+
+            // Animated background orbs parallax effect
+            gsap.to('.orb-1', {
+                x: 100,
+                y: -50,
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+
+            gsap.to('.orb-2', {
+                x: -80,
+                y: 60,
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.5
+                }
+            });
+
+            // Detect user's country code first
+            await detectUserCountry();
+
+            // Fetch and render apps
+            try {
+                appsData = await fetchAllApps();
+                const appsGrid = document.getElementById('apps-grid');
+
+                if (appsData.length > 0) {
+                    appsGrid.innerHTML = appsData.map((app, index) => renderAppCard(app, index)).join('');
+                    updateStats(appsData);
+
+                    // Reinitialize AOS for new elements
+                    AOS.refresh();
+
+                    // Add click handlers to app cards
+                    document.querySelectorAll('.app-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            openModal(card.dataset.appId);
+                        });
+                    });
+                } else {
+                    appsGrid.innerHTML = `
+                        <div class="loading-container">
+                            <p class="loading-text">No apps found. Please check the app URLs.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading apps:', error);
+                document.getElementById('apps-grid').innerHTML = `
+                    <div class="loading-container">
+                        <p class="loading-text">Error loading apps. Please try again later.</p>
+                    </div>
+                `;
+            }
+
+            // Contact Form Submission
+            const contactForm = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const formStatus = document.getElementById('form-status');
+
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Show loading state
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<div class="spinner"></div><span>Sending...</span>';
+                formStatus.className = 'form-status';
+                formStatus.style.display = 'none';
+
+                // Get form data
+                const templateParams = {
+                    name: document.getElementById('name').value,
+                    company: document.getElementById('company').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    message: document.getElementById('message').value
+                };
+
+                try {
+                    // Send email using EmailJS
+                    await emailjs.send('service_3lvuufx', 'template_zb1ry1f', templateParams);
+
+                    // Show success message
+                    formStatus.className = 'form-status success';
+                    formStatus.innerHTML = '<i class="fas fa-check-circle"></i> Message sent successfully! I\'ll get back to you soon.';
+                    formStatus.style.display = 'block';
+                    contactForm.reset();
+                } catch (error) {
+                    console.error('EmailJS Error:', error);
+                    // Show error message
+                    formStatus.className = 'form-status error';
+                    formStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Could not send message. Please try again or email directly.';
+                    formStatus.style.display = 'block';
+                }
+
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Send Message</span>';
+            });
+
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Update footer year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+
+            // Handle window resize for responsive adjustments
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    AOS.refresh();
+                    ScrollTrigger.refresh();
+                }, 250);
+            });
+
+            // Lazy loading for images
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            if (img.dataset.src) {
+                                img.src = img.dataset.src;
+                                img.classList.add('loaded');
+                                observer.unobserve(img);
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll('img[data-src]').forEach(img => {
+                    imageObserver.observe(img);
+                });
+            }
+
+            // Ensure all elements are visible
+            gsap.set(['.tool-card', '.stat-card', '.app-card'], {
+                opacity: 1,
+                visibility: 'visible'
+            });
+        });
+    </script>
+</body>
+</html>
