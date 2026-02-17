@@ -3733,20 +3733,6 @@
            API DATA FETCHING
            ============================================ */
 
-        // Hardcoded screenshots for apps where iTunes API doesn't return them
-        const fallbackScreenshots = {
-            "6746660097": [ // Crick Line Guru Live Score
-                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/8a/f6/06/8af606c3-4e85-c8a3-8f30-8e0f4e5a63d9/1_Live_Score.png/392x696bb.png",
-                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/51/79/05/51790512-f4c9-c49a-1f2c-9b8d2d7c1a98/2_Crick_Line_Guru.png/392x696bb.png",
-                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/a2/89/c1/a289c1f5-1c86-c3d1-9f61-5d6b8a5d2f87/3_Finished_Matches.png/392x696bb.png"
-            ],
-            "6756230471": [ // CineBox - Movie Discovery
-                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/c1/d4/2e/c1d42eb8-8f89-4a31-5d71-8c1f6b3e9a52/1_Explore.png/392x696bb.png",
-                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/b3/67/1a/b3671a89-c5d2-4e91-7f32-9d8a1b5c4e67/2_Browse.png/392x696bb.png",
-                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/e7/23/95/e72395d1-3a47-5c82-8f19-4d7b2c9e1a35/3_Search.png/392x696bb.png"
-            ]
-        };
-
         async function fetchAppData(appId) {
             // Fetch with user's country code for localized ratings and reviews
             const baseUrl = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
@@ -3782,13 +3768,6 @@
                         console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
                         console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
                         console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
-
-                        // Fallback: If no screenshots from API, use hardcoded screenshots
-                        if ((!app.screenshotUrls || app.screenshotUrls.length === 0) && fallbackScreenshots[appId]) {
-                            console.log(`No screenshots from API for ${app.trackName}, using fallback...`);
-                            app.screenshotUrls = fallbackScreenshots[appId];
-                            console.log(`  - Fallback Screenshots: ${app.screenshotUrls.length}`);
-                        }
 
                         return app;
                     }
