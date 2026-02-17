@@ -3733,6 +3733,49 @@
            API DATA FETCHING
            ============================================ */
 
+        // Fallback: Fetch screenshots from App Store web page when API returns empty
+        async function fetchScreenshotsFromAppStore(appId, countryCode) {
+            const appStoreUrl = `https://apps.apple.com/${countryCode}/app/id${appId}`;
+            const proxyUrls = [
+                `https://corsproxy.io/?${encodeURIComponent(appStoreUrl)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(appStoreUrl)}`
+            ];
+
+            for (const proxyUrl of proxyUrls) {
+                try {
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) continue;
+
+                    const html = await response.text();
+
+                    // Extract screenshot URLs from the HTML
+                    const screenshotMatches = html.match(/https:\/\/is\d+-ssl\.mzstatic\.com\/image\/thumb\/[^"'\s]+\d{3,4}x\d{3,4}[^"'\s]*\.(?:jpg|png|webp)/gi);
+
+                    if (screenshotMatches && screenshotMatches.length > 0) {
+                        // Filter unique URLs and get iPhone screenshots (typically 392x696 or similar portrait sizes)
+                        const uniqueScreenshots = [...new Set(screenshotMatches)]
+                            .filter(url => {
+                                // Filter for iPhone portrait screenshots
+                                const sizeMatch = url.match(/(\d{3,4})x(\d{3,4})/);
+                                if (sizeMatch) {
+                                    const width = parseInt(sizeMatch[1]);
+                                    const height = parseInt(sizeMatch[2]);
+                                    // Portrait screenshots have height > width
+                                    return height > width && width >= 300 && width <= 500;
+                                }
+                                return false;
+                            });
+
+                        console.log(`Fetched ${uniqueScreenshots.length} screenshots from App Store page for app ${appId}`);
+                        return uniqueScreenshots;
+                    }
+                } catch (error) {
+                    console.log(`App Store page fetch failed for ${appId}, trying next proxy...`);
+                }
+            }
+            return [];
+        }
+
         async function fetchAppData(appId) {
             // Fetch with user's country code for localized ratings and reviews
             const baseUrl = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
@@ -3768,6 +3811,16 @@
                         console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
                         console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
                         console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
+
+                        // Fallback: If no screenshots from API, fetch from App Store page
+                        if (!app.screenshotUrls || app.screenshotUrls.length === 0) {
+                            console.log(`No screenshots from API for ${app.trackName}, fetching from App Store page...`);
+                            const fallbackScreenshots = await fetchScreenshotsFromAppStore(appId, userCountryCode);
+                            if (fallbackScreenshots.length > 0) {
+                                app.screenshotUrls = fallbackScreenshots;
+                                console.log(`  - Fallback Screenshots: ${fallbackScreenshots.length}`);
+                            }
+                        }
 
                         return app;
                     }
