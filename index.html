@@ -673,6 +673,9 @@
             font-family: 'Space Grotesk', sans-serif;
             font-size: 2.5rem;
             font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            min-width: 80px;
+            display: inline-block;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -3733,6 +3736,28 @@
            API DATA FETCHING
            ============================================ */
 
+        // Fallback screenshots for apps where iTunes API doesn't return them
+        const fallbackScreenshots = {
+            "6756230471": [ // CineBox - Movie Discovery
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/e6/dd/82/e6dd8266-7514-c552-151a-51a1b00ce2bb/15.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/74/50/8f/74508f60-39fb-f9e3-ccb0-ef841f51e105/13.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/21/4a/ef/214aef8d-609b-c6ce-125b-5c6e71624657/12__U00281_U0029.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/29/89/88/298988ba-e792-768e-7f8b-13f2801554c9/18.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/12/8a/50/128a50d6-0db9-b46a-e320-1052df17ced0/16.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/04/52/c1/0452c158-2724-a8f9-49a0-691513993b39/17.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/a1/ed/b0/a1edb0b7-f218-9ac4-37d2-3e13553f4364/14.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/ce/07/7b/ce077bf9-4b51-d473-b19c-09bc2b441e27/19.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/ee/6d/77/ee6d778f-9b63-87d8-2528-4ad4025f2c8a/20.png/460x996bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/fe/b2/bf/feb2bfa1-c3e3-d932-eb55-7341cf4a761b/21.png/460x996bb.webp"
+            ],
+            "6746660097": [ // Crick Line Guru Live Score
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/05/a7/e2/05a7e2dc-e4c4-046d-02f1-a013b62f7146/99.jpg/460x998bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/d1/5c/60/d15c6086-1170-bb93-b1d4-dff35cbf2c87/97.jpg/460x998bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/0d/c9/9c/0dc99c8e-f266-ae7e-0053-591c8c13a9cc/105.jpg/460x998bb.webp",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/68/25/05/68250552-6b90-ba3b-97d2-79caba8eabbe/100.jpg/460x998bb.webp"
+            ]
+        };
+
         async function fetchAppData(appId) {
             // Fetch with user's country code for localized ratings and reviews
             const baseUrl = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
@@ -3768,6 +3793,12 @@
                         console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
                         console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
                         console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
+
+                        // Use fallback screenshots if API returns empty
+                        if ((!app.screenshotUrls || app.screenshotUrls.length === 0) && fallbackScreenshots[appId]) {
+                            app.screenshotUrls = fallbackScreenshots[appId];
+                            console.log(`  - Using fallback screenshots: ${app.screenshotUrls.length}`);
+                        }
 
                         return app;
                     }
@@ -4010,31 +4041,76 @@
             `;
         }
 
+        // Smooth counter animation using requestAnimationFrame (like ishwardabeli.com)
+        function animateCounter(element, targetValue, duration = 2000, decimals = 0, formatter = null) {
+            if (!element) return;
+
+            const startValue = 0;
+            let startTime = null;
+            let animationId = null;
+
+            // Easing function - easeOutQuart for smooth, natural deceleration
+            const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+            function updateCounter(currentTime) {
+                if (!startTime) startTime = currentTime;
+
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutQuart(progress);
+
+                const currentValue = startValue + (targetValue - startValue) * easedProgress;
+
+                // Update display
+                if (formatter) {
+                    element.textContent = formatter(Math.round(currentValue));
+                } else if (decimals > 0) {
+                    element.textContent = currentValue.toFixed(decimals);
+                } else {
+                    element.textContent = Math.round(currentValue).toLocaleString('en-IN');
+                }
+
+                if (progress < 1) {
+                    animationId = requestAnimationFrame(updateCounter);
+                } else {
+                    // Ensure final value is exact
+                    if (formatter) {
+                        element.textContent = formatter(targetValue);
+                    } else if (decimals > 0) {
+                        element.textContent = targetValue.toFixed(decimals);
+                    } else {
+                        element.textContent = Math.round(targetValue).toLocaleString('en-IN');
+                    }
+                }
+            }
+
+            // Cancel any existing animation
+            if (animationId) cancelAnimationFrame(animationId);
+
+            requestAnimationFrame(updateCounter);
+        }
+
         function updateStats(apps) {
             const totalApps = apps.length;
             const avgRating = apps.reduce((sum, app) => sum + (app.averageUserRating || 0), 0) / totalApps;
             const totalReviews = apps.reduce((sum, app) => sum + (app.userRatingCount || 0), 0);
 
-            // Animate stats
-            gsap.to('#total-apps', {
-                duration: 2,
-                innerHTML: totalApps,
-                snap: { innerHTML: 1 },
-                ease: 'power2.out'
-            });
+            // Smooth animated counters
+            const totalAppsEl = document.getElementById('total-apps');
+            const avgRatingEl = document.getElementById('avg-rating');
+            const totalReviewsEl = document.getElementById('total-reviews');
 
-            gsap.to('#avg-rating', {
-                duration: 2,
-                innerHTML: avgRating.toFixed(1),
-                snap: { innerHTML: 0.1 },
-                ease: 'power2.out'
-            });
+            if (totalAppsEl) {
+                animateCounter(totalAppsEl, totalApps, 2000, 0);
+            }
 
-            gsap.to('#total-reviews', {
-                duration: 2,
-                innerHTML: formatNumber(totalReviews),
-                ease: 'power2.out'
-            });
+            if (avgRatingEl) {
+                animateCounter(avgRatingEl, avgRating, 2000, 1);
+            }
+
+            if (totalReviewsEl) {
+                animateCounter(totalReviewsEl, totalReviews, 2500, 0, formatNumber);
+            }
         }
 
         /* ============================================
