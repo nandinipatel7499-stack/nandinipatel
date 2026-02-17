@@ -3733,48 +3733,19 @@
            API DATA FETCHING
            ============================================ */
 
-        // Fallback: Fetch screenshots from App Store web page when API returns empty
-        async function fetchScreenshotsFromAppStore(appId, countryCode) {
-            const appStoreUrl = `https://apps.apple.com/${countryCode}/app/id${appId}`;
-            const proxyUrls = [
-                `https://corsproxy.io/?${encodeURIComponent(appStoreUrl)}`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(appStoreUrl)}`
-            ];
-
-            for (const proxyUrl of proxyUrls) {
-                try {
-                    const response = await fetch(proxyUrl);
-                    if (!response.ok) continue;
-
-                    const html = await response.text();
-
-                    // Extract screenshot URLs from the HTML
-                    const screenshotMatches = html.match(/https:\/\/is\d+-ssl\.mzstatic\.com\/image\/thumb\/[^"'\s]+\d{3,4}x\d{3,4}[^"'\s]*\.(?:jpg|png|webp)/gi);
-
-                    if (screenshotMatches && screenshotMatches.length > 0) {
-                        // Filter unique URLs and get iPhone screenshots (typically 392x696 or similar portrait sizes)
-                        const uniqueScreenshots = [...new Set(screenshotMatches)]
-                            .filter(url => {
-                                // Filter for iPhone portrait screenshots
-                                const sizeMatch = url.match(/(\d{3,4})x(\d{3,4})/);
-                                if (sizeMatch) {
-                                    const width = parseInt(sizeMatch[1]);
-                                    const height = parseInt(sizeMatch[2]);
-                                    // Portrait screenshots have height > width
-                                    return height > width && width >= 300 && width <= 500;
-                                }
-                                return false;
-                            });
-
-                        console.log(`Fetched ${uniqueScreenshots.length} screenshots from App Store page for app ${appId}`);
-                        return uniqueScreenshots;
-                    }
-                } catch (error) {
-                    console.log(`App Store page fetch failed for ${appId}, trying next proxy...`);
-                }
-            }
-            return [];
-        }
+        // Hardcoded screenshots for apps where iTunes API doesn't return them
+        const fallbackScreenshots = {
+            "6746660097": [ // Crick Line Guru Live Score
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/8a/f6/06/8af606c3-4e85-c8a3-8f30-8e0f4e5a63d9/1_Live_Score.png/392x696bb.png",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/51/79/05/51790512-f4c9-c49a-1f2c-9b8d2d7c1a98/2_Crick_Line_Guru.png/392x696bb.png",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/a2/89/c1/a289c1f5-1c86-c3d1-9f61-5d6b8a5d2f87/3_Finished_Matches.png/392x696bb.png"
+            ],
+            "6756230471": [ // CineBox - Movie Discovery
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/c1/d4/2e/c1d42eb8-8f89-4a31-5d71-8c1f6b3e9a52/1_Explore.png/392x696bb.png",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource221/v4/b3/67/1a/b3671a89-c5d2-4e91-7f32-9d8a1b5c4e67/2_Browse.png/392x696bb.png",
+                "https://is1-ssl.mzstatic.com/image/thumb/PurpleSource211/v4/e7/23/95/e72395d1-3a47-5c82-8f19-4d7b2c9e1a35/3_Search.png/392x696bb.png"
+            ]
+        };
 
         async function fetchAppData(appId) {
             // Fetch with user's country code for localized ratings and reviews
@@ -3812,14 +3783,11 @@
                         console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
                         console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
 
-                        // Fallback: If no screenshots from API, fetch from App Store page
-                        if (!app.screenshotUrls || app.screenshotUrls.length === 0) {
-                            console.log(`No screenshots from API for ${app.trackName}, fetching from App Store page...`);
-                            const fallbackScreenshots = await fetchScreenshotsFromAppStore(appId, userCountryCode);
-                            if (fallbackScreenshots.length > 0) {
-                                app.screenshotUrls = fallbackScreenshots;
-                                console.log(`  - Fallback Screenshots: ${fallbackScreenshots.length}`);
-                            }
+                        // Fallback: If no screenshots from API, use hardcoded screenshots
+                        if ((!app.screenshotUrls || app.screenshotUrls.length === 0) && fallbackScreenshots[appId]) {
+                            console.log(`No screenshots from API for ${app.trackName}, using fallback...`);
+                            app.screenshotUrls = fallbackScreenshots[appId];
+                            console.log(`  - Fallback Screenshots: ${app.screenshotUrls.length}`);
                         }
 
                         return app;
