@@ -1807,11 +1807,19 @@
         .email-direct {
             margin-top: 30px;
             text-align: center;
+            position: relative;
+            z-index: 20;
         }
 
         .email-direct p {
             color: var(--text-muted);
             margin-bottom: 15px;
+        }
+
+        .email-direct .contact-link {
+            display: inline-flex;
+            pointer-events: auto;
+            z-index: 25;
         }
 
         /* ============================================
@@ -2746,9 +2754,20 @@
         /* Fix for Email Me button clickability */
         .contact-link {
             position: relative;
-            z-index: 10;
+            z-index: 30;
             cursor: pointer;
             -webkit-tap-highlight-color: rgba(168, 85, 247, 0.3);
+            pointer-events: auto !important;
+        }
+
+        .email-direct {
+            position: relative;
+            z-index: 25;
+            isolation: isolate;
+        }
+
+        .email-direct .contact-link {
+            z-index: 30;
         }
 
         /* iOS Safari smooth scrolling and performance */
