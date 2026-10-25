@@ -246,6 +246,14 @@
         html {
             scroll-behavior: smooth;
             font-size: 16px;
+            overflow-x: hidden;
+        }
+
+        @supports (overflow-x: clip) {
+            html,
+            body {
+                overflow-x: clip;
+            }
         }
 
         body {
