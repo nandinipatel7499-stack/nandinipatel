@@ -48,7 +48,11 @@ def fetch_storefront(country):
 def load_previous():
     if PREVIOUS_URL:
         try:
-            with urllib.request.urlopen(f"{PREVIOUS_URL}?t={int(time.time())}", timeout=20) as response:
+            request = urllib.request.Request(
+                f"{PREVIOUS_URL}?t={int(time.time())}",
+                headers={"User-Agent": "nandinipatel-apps-action/1.0", "Accept": "application/json"},
+            )
+            with urllib.request.urlopen(request, timeout=20) as response:
                 return json.load(response)
         except Exception as error:
             print(f"Could not load previous data ({error})", file=sys.stderr)
