@@ -1,0 +1,15 @@
+{
+  "name": "nandinipatel-apps",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "kv_namespaces": [
+    {
+      "binding": "APPS_KV",
+      "id": "83752c6e5fae4ed19b2075f48d6731a0"
+    }
+  ],
+  "triggers": {
+    "crons": ["*/5 * * * *"]
+  }
+}
