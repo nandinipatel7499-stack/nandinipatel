@@ -3878,16 +3878,25 @@
 
         let usingPublishedData = false;
 
+        const publishedAppsSources = [
+            'https://raw.githubusercontent.com/nandinipatel7499-stack/nandinipatel/main/apps.json',
+            'apps.json'
+        ];
+
         async function fetchPublishedApps() {
-            try {
-                const response = await fetch(`apps.json?t=${Math.floor(Date.now() / 60000)}`, { cache: 'no-store' });
-                if (!response.ok) return null;
-                const data = await response.json();
-                return Array.isArray(data.apps) && data.apps.length > 0 ? data.apps : null;
-            } catch (error) {
-                console.log('Published apps.json unavailable, using live App Store lookup');
-                return null;
+            const stamp = Math.floor(Date.now() / 60000);
+            for (const source of publishedAppsSources) {
+                try {
+                    const response = await fetch(`${source}?t=${stamp}`, { cache: 'no-store' });
+                    if (!response.ok) continue;
+                    const data = await response.json();
+                    if (Array.isArray(data.apps) && data.apps.length > 0) return data.apps;
+                } catch (error) {
+                    console.log(`Published apps data unavailable from ${source}`);
+                }
             }
+            console.log('Published apps data unavailable, using live App Store lookup');
+            return null;
         }
 
         async function fetchAllApps() {
