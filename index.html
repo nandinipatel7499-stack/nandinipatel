@@ -2855,20 +2855,28 @@
                 font-size: 1rem;
             }
 
-            .tool-item {
-                padding: 15px 10px;
+            .tool-card {
+                padding: 14px 4px;
+                min-width: 0;
             }
 
             .tool-icon {
-                font-size: 1.5rem;
+                width: 36px;
+                height: 36px;
+                margin-bottom: 8px;
+            }
+
+            .tool-icon i {
+                font-size: 1.6rem !important;
             }
 
             .tool-name {
-                font-size: 0.7rem;
+                font-size: clamp(0.6rem, 3vw, 0.7rem);
+                overflow-wrap: anywhere;
             }
 
             .tools-grid {
-                grid-template-columns: repeat(4, 1fr);
+                grid-template-columns: repeat(4, minmax(0, 1fr));
                 gap: 8px;
             }
 
@@ -3659,15 +3667,21 @@
            APP CONFIGURATION
            ============================================
 
-           To add more apps, simply add their App Store URLs to this array.
-           The app ID will be automatically extracted from each URL.
-           Country code is automatically detected from user's IP.
+           Apps are discovered automatically from the App Store developer
+           account, so newly released apps appear without code changes.
+           Ratings are summed across every App Store storefront.
         */
-        const appIds = [
-            "6746660097",
-            "6502560786",
-            "6756230471"
-        ];
+        const developerId = "1742606172";
+
+        const appStoreStorefronts = ("ae af ag ai al am ao ar at au az ba bb bd be bf bg bh bj bm bn bo br bs bt bw by bz " +
+            "ca cd cg ch ci cl cm cn co cr cv cy cz de dk dm do dz ec ee eg es fi fj fm fr ga gb gd ge gh gm gr gt gw gy " +
+            "hk hn hr hu id ie il in iq is it jm jo jp ke kg kh kn kr kw ky kz la lb lc lk lr lt lu lv ly ma md me mg mk " +
+            "ml mm mn mo mr ms mt mu mv mw mx my mz na ne ng ni nl no np nr nz om pa pe pg ph pk pl pt pw py qa ro rs ru " +
+            "rw sa sb sc se sg si sk sl sn sr st sv sz tc td th tj tm tn to tr tt tw tz ua ug us uy uz vc ve vg vn vu xk " +
+            "ye za zm zw").split(" ");
+
+        const globalRatingsCacheKey = 'np_global_ratings_v1';
+        const globalRatingsRefreshMs = 15 * 60 * 1000;
 
         // User's country code (detected automatically, default to India)
         let userCountryCode = 'in';
@@ -3777,67 +3791,136 @@
             ]
         };
 
-        async function fetchAppData(appId) {
-            // Fetch with user's country code for localized ratings and reviews
-            const baseUrl = `https://itunes.apple.com/lookup?id=${appId}&country=${userCountryCode}`;
-
-            // CORS proxy options for fallback
-            const urls = [
+        async function fetchStorefrontApps(country, useProxies) {
+            const baseUrl = `https://itunes.apple.com/lookup?id=${developerId}&entity=software&limit=200&country=${country}`;
+            const urls = useProxies ? [
                 baseUrl,
                 `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`,
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`
-            ];
+            ] : [baseUrl];
 
             for (const url of urls) {
                 try {
-                    console.log(`Fetching app ${appId} from: ${url}`);
-                    const response = await fetch(url);
-
+                    const response = await fetch(url, { cache: 'no-store' });
                     if (!response.ok) continue;
-
                     const data = await response.json();
-
-                    if (data.results && data.results.length > 0) {
-                        const app = data.results[0];
-
-                        // Normalize rating fields (API uses different field names)
-                        // Check both regular and "ForCurrentVersion" fields
-                        const rating = app.averageUserRating ?? app.averageUserRatingForCurrentVersion ?? 0;
-                        const ratingCount = app.userRatingCount ?? app.userRatingCountForCurrentVersion ?? 0;
-
-                        app.averageUserRating = rating;
-                        app.userRatingCount = ratingCount;
-
-                        console.log(`App: ${app.trackName}`);
-                        console.log(`  - Rating: ${rating} (${ratingCount} reviews)`);
-                        console.log(`  - Screenshots: ${(app.screenshotUrls || []).length}`);
-                        console.log(`  - iPad Screenshots: ${(app.ipadScreenshotUrls || []).length}`);
-
-                        // Use fallback screenshots if API returns empty
-                        if ((!app.screenshotUrls || app.screenshotUrls.length === 0) && fallbackScreenshots[appId]) {
-                            app.screenshotUrls = fallbackScreenshots[appId];
-                            console.log(`  - Using fallback screenshots: ${app.screenshotUrls.length}`);
-                        }
-
-                        return app;
-                    }
+                    return (data.results || []).filter(item => item.wrapperType === 'software' && item.trackId);
                 } catch (error) {
-                    console.log(`Attempt failed for ${url}, trying next...`);
+                    console.log(`Storefront ${country} failed for ${url}`);
                 }
             }
-
-            console.error(`Error fetching app ${appId}: All attempts failed`);
             return null;
         }
 
-        async function fetchAllApps() {
-            const appDataPromises = appIds.map(fetchAppData);
-            const results = await Promise.all(appDataPromises);
-            // Add country-specific App Store URL to each app
-            return results.filter(app => app !== null).map(app => ({
+        function readGlobalRatingsCache() {
+            try {
+                const cached = JSON.parse(localStorage.getItem(globalRatingsCacheKey) || 'null');
+                return cached && cached.stores ? cached : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function writeGlobalRatingsCache(stores) {
+            try {
+                localStorage.setItem(globalRatingsCacheKey, JSON.stringify({ ts: Date.now(), stores }));
+            } catch (error) {
+                console.log('Could not cache global ratings');
+            }
+        }
+
+        function applyGlobalRatings(apps, stores) {
+            if (!stores) return apps;
+            return apps.map(app => {
+                let count = 0;
+                let weighted = 0;
+                let seen = false;
+                Object.values(stores).forEach(store => {
+                    const entry = store[app.trackId];
+                    if (!entry) return;
+                    seen = true;
+                    count += entry[0];
+                    weighted += entry[0] * entry[1];
+                });
+                if (!seen) return app;
+                return {
+                    ...app,
+                    userRatingCount: count,
+                    averageUserRating: count > 0 ? weighted / count : 0
+                };
+            });
+        }
+
+        function prepareApp(app) {
+            const prepared = {
                 ...app,
+                averageUserRating: app.averageUserRating ?? 0,
+                userRatingCount: app.userRatingCount ?? 0,
                 trackViewUrl: `https://apps.apple.com/${userCountryCode}/app/id${app.trackId}`
-            }));
+            };
+            if ((!prepared.screenshotUrls || prepared.screenshotUrls.length === 0) && fallbackScreenshots[app.trackId]) {
+                prepared.screenshotUrls = fallbackScreenshots[app.trackId];
+            }
+            return prepared;
+        }
+
+        function sortApps(apps) {
+            return apps.sort((a, b) => new Date(b.releaseDate || 0) - new Date(a.releaseDate || 0));
+        }
+
+        async function fetchAllApps() {
+            const appsById = new Map();
+            const countries = userCountryCode === 'us' ? ['us'] : [userCountryCode, 'us'];
+
+            for (const country of countries) {
+                const apps = await fetchStorefrontApps(country, true);
+                (apps || []).forEach(app => {
+                    if (!appsById.has(app.trackId)) appsById.set(app.trackId, app);
+                });
+            }
+
+            const cached = readGlobalRatingsCache();
+            const apps = sortApps([...appsById.values()].map(prepareApp));
+            return applyGlobalRatings(apps, cached ? cached.stores : null);
+        }
+
+        async function fetchGlobalRatings(knownApps) {
+            const cached = readGlobalRatingsCache();
+            const previousStores = cached ? cached.stores : {};
+            const stores = {};
+            const discovered = new Map();
+            const queue = [...appStoreStorefronts];
+            let failed = 0;
+
+            async function worker() {
+                while (queue.length > 0) {
+                    const country = queue.shift();
+                    const apps = await fetchStorefrontApps(country, false);
+                    if (!apps) {
+                        failed += 1;
+                        if (previousStores[country]) stores[country] = previousStores[country];
+                        continue;
+                    }
+                    const store = {};
+                    apps.forEach(app => {
+                        store[app.trackId] = [app.userRatingCount || 0, app.averageUserRating || 0];
+                        if (!discovered.has(app.trackId)) discovered.set(app.trackId, app);
+                    });
+                    stores[country] = store;
+                }
+            }
+
+            await Promise.all(Array.from({ length: 8 }, worker));
+            console.log(`Global ratings: ${appStoreStorefronts.length - failed}/${appStoreStorefronts.length} storefronts loaded`);
+
+            if (Object.keys(stores).length === 0) return null;
+            writeGlobalRatingsCache(stores);
+
+            const appsById = new Map(knownApps.map(app => [app.trackId, app]));
+            discovered.forEach((app, id) => {
+                if (!appsById.has(id)) appsById.set(id, prepareApp(app));
+            });
+            return applyGlobalRatings(sortApps([...appsById.values()]), stores);
         }
 
         /* ============================================
@@ -4111,8 +4194,9 @@
 
         function updateStats(apps) {
             const totalApps = apps.length;
-            const avgRating = apps.reduce((sum, app) => sum + (app.averageUserRating || 0), 0) / totalApps;
             const totalReviews = apps.reduce((sum, app) => sum + (app.userRatingCount || 0), 0);
+            const weightedRating = apps.reduce((sum, app) => sum + (app.averageUserRating || 0) * (app.userRatingCount || 0), 0);
+            const avgRating = totalReviews > 0 ? weightedRating / totalReviews : 0;
 
             // Smooth animated counters
             const totalAppsEl = document.getElementById('total-apps');
@@ -4415,24 +4499,64 @@
             // Detect user's country code first
             await detectUserCountry();
 
-            // Fetch and render apps
-            try {
-                appsData = await fetchAllApps();
-                const appsGrid = document.getElementById('apps-grid');
+            const appsGrid = document.getElementById('apps-grid');
 
-                if (appsData.length > 0) {
-                    appsGrid.innerHTML = appsData.map((app, index) => renderAppCard(app, index)).join('');
-                    updateStats(appsData);
+            function renderApps(apps) {
+                const renderedIds = [...appsGrid.querySelectorAll('.app-card')].map(card => card.dataset.appId).join(',');
+                const nextIds = apps.map(app => String(app.trackId)).join(',');
 
-                    // Reinitialize AOS for new elements
+                if (renderedIds === nextIds) {
+                    apps.forEach(app => {
+                        const ratingEl = appsGrid.querySelector(`.app-card[data-app-id="${app.trackId}"] .app-rating`);
+                        if (!ratingEl) return;
+                        const rating = app.averageUserRating || 0;
+                        ratingEl.innerHTML = `
+                            <div class="stars">${generateStars(rating)}</div>
+                            <span class="rating-value">${rating.toFixed(1)}</span>
+                            <span class="review-count">(${formatNumber(app.userRatingCount || 0)} reviews)</span>
+                        `;
+                    });
+                } else {
+                    appsGrid.innerHTML = apps.map((app, index) => renderAppCard(app, index)).join('');
                     AOS.refresh();
-
-                    // Add click handlers to app cards
-                    document.querySelectorAll('.app-card').forEach(card => {
+                    appsGrid.querySelectorAll('.app-card').forEach(card => {
                         card.addEventListener('click', () => {
                             openModal(card.dataset.appId);
                         });
                     });
+                }
+                updateStats(apps);
+            }
+
+            async function refreshGlobalRatings() {
+                try {
+                    const globalApps = await fetchGlobalRatings(appsData);
+                    if (globalApps && globalApps.length > 0) {
+                        appsData = globalApps;
+                        renderApps(appsData);
+                    }
+                } catch (error) {
+                    console.error('Error loading global ratings:', error);
+                }
+            }
+
+            async function refreshApps() {
+                const latestApps = await fetchAllApps();
+                if (latestApps.length > 0) {
+                    appsData = latestApps;
+                    renderApps(appsData);
+                }
+                await refreshGlobalRatings();
+            }
+
+            // Fetch and render apps
+            try {
+                appsData = await fetchAllApps();
+
+                if (appsData.length > 0) {
+                    renderApps(appsData);
+                    refreshGlobalRatings();
+                    setInterval(refreshApps, globalRatingsRefreshMs);
                 } else {
                     appsGrid.innerHTML = `
                         <div class="loading-container">
