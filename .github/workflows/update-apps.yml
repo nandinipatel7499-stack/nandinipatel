@@ -6,8 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pages: write
+  contents: read
 
 concurrency:
   group: update-apps
@@ -16,28 +15,27 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      WORKER_URL: https://nandinipatel-apps.ronikhirpara18.workers.dev
     steps:
       - uses: actions/checkout@v4
 
       - name: Fetch apps and global ratings
+        env:
+          OUTPUT: ${{ runner.temp }}/apps.json
+          PREVIOUS_URL: ${{ env.WORKER_URL }}/apps.json
         run: python3 .github/scripts/fetch_apps.py
 
-      - name: Commit changes
-        id: commit
+      - name: Publish to Cloudflare Worker
+        env:
+          INGEST_SECRET: ${{ secrets.INGEST_SECRET }}
         run: |
-          if git diff --quiet -- apps.json && git ls-files --error-unmatch apps.json >/dev/null 2>&1; then
-            echo "changed=false" >> "$GITHUB_OUTPUT"
+          file="${{ runner.temp }}/apps.json"
+          if [ ! -f "$file" ]; then
+            echo "No changes to publish"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add apps.json
-          git commit -m "Update App Store data"
-          git push
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild GitHub Pages
-        if: steps.commit.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
+          curl --fail-with-body -sS -X POST "$WORKER_URL/ingest" \
+            -H "Authorization: Bearer $INGEST_SECRET" \
+            -H "Content-Type: application/json" \
+            --data-binary "@$file"

@@ -6,7 +6,8 @@ import urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 DEVELOPER_ID = "1742606172"
-OUTPUT = "apps.json"
+OUTPUT = os.environ.get("OUTPUT", "apps.json")
+PREVIOUS_URL = os.environ.get("PREVIOUS_URL")
 DISPLAY_STOREFRONT = "us"
 
 STOREFRONTS = (
@@ -45,6 +46,13 @@ def fetch_storefront(country):
 
 
 def load_previous():
+    if PREVIOUS_URL:
+        try:
+            with urllib.request.urlopen(f"{PREVIOUS_URL}?t={int(time.time())}", timeout=20) as response:
+                return json.load(response)
+        except Exception as error:
+            print(f"Could not load previous data ({error})", file=sys.stderr)
+            return {}
     if not os.path.exists(OUTPUT):
         return {}
     try:
