@@ -3868,7 +3868,27 @@
             return apps.sort((a, b) => new Date(b.releaseDate || 0) - new Date(a.releaseDate || 0));
         }
 
+        let usingPublishedData = false;
+
+        async function fetchPublishedApps() {
+            try {
+                const response = await fetch(`apps.json?t=${Math.floor(Date.now() / 60000)}`, { cache: 'no-store' });
+                if (!response.ok) return null;
+                const data = await response.json();
+                return Array.isArray(data.apps) && data.apps.length > 0 ? data.apps : null;
+            } catch (error) {
+                console.log('Published apps.json unavailable, using live App Store lookup');
+                return null;
+            }
+        }
+
         async function fetchAllApps() {
+            const published = await fetchPublishedApps();
+            usingPublishedData = published !== null;
+            if (published) {
+                return sortApps(published.map(prepareApp));
+            }
+
             const appsById = new Map();
             const countries = userCountryCode === 'us' ? ['us'] : [userCountryCode, 'us'];
 
@@ -4529,6 +4549,7 @@
             }
 
             async function refreshGlobalRatings() {
+                if (usingPublishedData) return;
                 try {
                     const globalApps = await fetchGlobalRatings(appsData);
                     if (globalApps && globalApps.length > 0) {
