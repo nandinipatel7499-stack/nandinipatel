@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 import time
 import urllib.request
@@ -43,6 +44,82 @@ def fetch_storefront(country):
             print(f"{country}: attempt {attempt + 1} failed ({error})", file=sys.stderr)
             time.sleep(2 * (attempt + 1))
     return country, None
+
+
+BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Safari/605.1.15"
+
+
+def extract_preview_videos(html):
+    videos, seen = [], set()
+    for match in re.finditer(r"<script[^>]*>(.*?)</script>", html, re.S):
+        body = match.group(1).strip()
+        if "product_media_" not in body or not body.startswith("{"):
+            continue
+        try:
+            data = json.loads(body)
+        except Exception:
+            continue
+        stack = [data]
+        while stack:
+            node = stack.pop()
+            if isinstance(node, dict):
+                for key, value in node.items():
+                    if key.startswith("product_media_") and isinstance(value, dict):
+                        device = "pad" if "pad" in key else "phone"
+                        for item in value.get("items") or []:
+                            video = (item or {}).get("video") or {}
+                            url = video.get("videoUrl")
+                            if not url or url in seen or not url.startswith("https://"):
+                                continue
+                            seen.add(url)
+                            preview = video.get("preview") or {}
+                            poster = None
+                            template = preview.get("template")
+                            if template and preview.get("width") and preview.get("height"):
+                                poster = (
+                                    template.replace("{w}", str(preview["width"]))
+                                    .replace("{h}", str(preview["height"]))
+                                    .replace("{c}", "bb")
+                                    .replace("{f}", "png")
+                                )
+                            videos.append({"url": url, "poster": poster, "device": device})
+                    stack.append(value)
+            elif isinstance(node, list):
+                stack.extend(node)
+    return videos
+
+
+def fetch_preview_videos(app_id):
+    url = f"https://apps.apple.com/{DISPLAY_STOREFRONT}/app/id{app_id}"
+    for attempt in range(3):
+        try:
+            request = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA, "Accept-Language": "en-US"})
+            with urllib.request.urlopen(request, timeout=30) as response:
+                html = response.read().decode("utf-8", "replace")
+            if "product_media_" not in html:
+                raise ValueError("no media shelf in page")
+            return app_id, extract_preview_videos(html)
+        except Exception as error:
+            print(f"previews {app_id}: attempt {attempt + 1} failed ({error})", file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    return app_id, None
+
+
+def fetch_store_order():
+    url = f"https://apps.apple.com/{DISPLAY_STOREFRONT}/developer/id{DEVELOPER_ID}"
+    for attempt in range(3):
+        try:
+            request = urllib.request.Request(url, headers={"User-Agent": BROWSER_UA, "Accept-Language": "en-US"})
+            with urllib.request.urlopen(request, timeout=30) as response:
+                html = response.read().decode("utf-8", "replace")
+            order = list(dict.fromkeys(re.findall(r'"\$kind":"Lockup","title":"[^"]*","adamId":"?(\d+)', html)))
+            if not order:
+                raise ValueError("no app lockups in developer page")
+            return order
+        except Exception as error:
+            print(f"store order: attempt {attempt + 1} failed ({error})", file=sys.stderr)
+            time.sleep(2 * (attempt + 1))
+    return None
 
 
 def load_previous():
@@ -96,6 +173,18 @@ def main():
         print(f"Too many storefronts failed ({len(failed)}); keeping previous {OUTPUT}", file=sys.stderr)
         sys.exit(1)
 
+    previous_videos = {str(a.get("trackId")): a.get("previewVideos") for a in previous.get("apps", [])}
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        videos = dict(pool.map(fetch_preview_videos, list(display)))
+
+    store_order = fetch_store_order()
+    if store_order is None:
+        store_order = [
+            str(a.get("trackId"))
+            for a in sorted(previous.get("apps", []), key=lambda a: a.get("storeRank", 10**6))
+            if isinstance(a.get("storeRank"), int)
+        ]
+
     apps_out = []
     for app_id, app in display.items():
         count = 0
@@ -108,9 +197,16 @@ def main():
         item = {field: app[field] for field in DISPLAY_FIELDS if field in app}
         item["userRatingCount"] = count
         item["averageUserRating"] = round(weighted / count, 4) if count else 0
+        app_videos = videos.get(app_id)
+        if app_videos is None:
+            app_videos = previous_videos.get(app_id) or []
+        item["previewVideos"] = app_videos
+        if app_id in store_order:
+            item["storeRank"] = store_order.index(app_id)
         apps_out.append(item)
 
     apps_out.sort(key=lambda a: a.get("releaseDate", ""), reverse=True)
+    apps_out.sort(key=lambda a: a.get("storeRank", -1))
 
     output = {
         "developerId": DEVELOPER_ID,
